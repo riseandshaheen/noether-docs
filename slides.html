@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noether / CTSI PoS — Slides</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4f;
+      --text: #e8edf4;
+      --muted: #8b9cb3;
+      --accent: #6c5ce7;
+      --accent2: #00cec9;
+      --warn: #f39c12;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .deck { height: 100vh; position: relative; }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 3rem 4rem 4rem;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .slide h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .slide h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      color: var(--accent2);
+    }
+
+    .slide h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1rem 0 0.5rem;
+      color: var(--muted);
+    }
+
+    .slide p, .slide li {
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .slide p { margin-bottom: 0.75rem; }
+
+    .slide ul, .slide ol {
+      margin: 0.5rem 0 1rem 1.25rem;
+    }
+
+    .slide li { margin-bottom: 0.4rem; }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-right: 0.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    .card h3 { color: var(--accent2); margin-top: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background: var(--surface);
+      color: var(--accent2);
+      font-weight: 600;
+    }
+
+    pre.diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-family: "SF Mono", Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      color: var(--muted);
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+
+    .flow-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .flow-box.accent {
+      border-color: var(--accent);
+      background: rgba(108, 92, 231, 0.15);
+    }
+
+    .flow-arrow { color: var(--muted); font-size: 1.25rem; }
+
+    .title-slide {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .title-slide h1 {
+      font-size: 3rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      z-index: 100;
+    }
+
+    .nav button {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .nav button:hover { border-color: var(--accent); }
+
+    .progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.3s ease;
+      z-index: 100;
+    }
+
+    .counter {
+      position: fixed;
+      bottom: 1.35rem;
+      left: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      z-index: 100;
+    }
+
+    a { color: var(--accent2); }
+
+    .small { font-size: 0.88rem; color: var(--muted); }
+
+    .highlight { color: var(--warn); }
+
+    @media (max-width: 900px) {
+      .slide { padding: 2rem 1.5rem 3rem; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .title-slide h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+
+    <!-- 1 Title -->
+    <section class="slide title-slide active">
+      <h1>Noether / CTSI PoS</h1>
+      <p class="subtitle">Cartesi Proof of Stake — ecosystem overview</p>
+      <p class="small">Based on <code>noether-docs/</code> knowledge base</p>
+      <div style="margin-top: 2rem;">
+        <span class="tag">pos-dlib</span>
+        <span class="tag">staking-pool</span>
+        <span class="tag">noether</span>
+        <span class="tag">explorer</span>
+        <span class="tag">subgraph</span>
+      </div>
+    </section>
+
+    <!-- 2 What is staking -->
+    <section class="slide">
+      <h2>What is CTSI staking?</h2>
+      <p>CTSI holders lock tokens on <strong>Ethereum mainnet</strong> to produce blocks on <strong>Noether</strong>, Cartesi's sidechain. Producers earn CTSI from the <strong>Mine Reserve</strong>.</p>
+      <ul>
+        <li>Every stake, block claim, and reward is an on-chain Ethereum transaction</li>
+        <li>The <strong>Noether node</strong> is off-chain software that watches PoS contracts and submits <code>produceBlock()</code> when eligible</li>
+        <li>Noether blocks are <strong>empty today</strong> — the sidechain is a reward mechanism, not an app execution environment</li>
+      </ul>
+      <p class="small">Distinct from Cartesi Rollups (application logic in the Cartesi Machine).</p>
+    </section>
+
+    <!-- 3 Stack + repos (merged) -->
+    <section class="slide">
+      <h2>Component stack & repositories</h2>
+      <pre class="diagram">┌─────────────────────────────────────────────┐
+│  explorer (Next.js) — explorer.cartesi.io   │
+└──────────────────────┬──────────────────────┘
+                       │ GraphQL + wallet
+┌──────────────────────▼──────────────────────┐
+│  subgraph (The Graph) — indexes events        │
+└──────────────────────┬──────────────────────┘
+                       │ reads events
+┌──────────────────────▼──────────────────────┐
+│  Ethereum — pos-dlib + staking-pool + CTSI  │
+└──────────────────────┬──────────────────────┘
+                       │ produceBlock / rebalance
+┌──────────────────────▼──────────────────────┐
+│  noether (Docker: cartesi/noether)          │
+└─────────────────────────────────────────────┘</pre>
+      <table>
+        <tr><th>Repo</th><th>Role</th></tr>
+        <tr><td><strong>pos-dlib</strong></td><td>Core PoS contracts — stake, selection, difficulty, rewards</td></tr>
+        <tr><td><strong>staking-pool</strong></td><td>Public pools — shares, rebalance, commission</td></tr>
+        <tr><td><strong>noether</strong></td><td>Worker node — poll eligibility, produceBlock, rebalance</td></tr>
+        <tr><td><strong>explorer</strong></td><td>Staking portal UI — stake, pools, node management</td></tr>
+        <tr><td><strong>subgraph</strong></td><td>GraphQL indexer for explorer analytics</td></tr>
+      </table>
+    </section>
+
+    <!-- 4 Block production -->
+    <section class="slide">
+      <h2>How block production works</h2>
+      <ol>
+        <li>Stake CTSI via <code>StakingImpl</code></li>
+        <li>Weighted random selection — higher stake = higher probability</li>
+        <li>Eligible staker's <strong>worker</strong> (Noether node) calls <code>produceBlock()</code></li>
+        <li><code>RewardManager</code> pays <strong>~2,900 CTSI</strong> to the staker</li>
+        <li>Difficulty adjusts to keep block interval stable as total stake changes</li>
+      </ol>
+    </section>
+
+    <!-- 5 Three ways -->
+    <section class="slide">
+      <h2>Three ways to participate</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>1. Public pool</h3>
+          <p>Deposit CTSI → receive shares. Operator runs node. Rewards auto-compound; operator takes commission.</p>
+          <p class="small">explorer.cartesi.io → Stake</p>
+        </div>
+        <div class="card">
+          <h3>2. Private node</h3>
+          <p>Stake directly + run your own Noether node as worker. You fund node ETH for gas.</p>
+          <p class="small">explorer → Node Runners → Create My Node</p>
+        </div>
+        <div class="card">
+          <h3>3. Custodial</h3>
+          <p>CEX / custodian (Binance, etc.) — outside the open-source PoS stack. Own rules and custody.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 Economics -->
+    <section class="slide">
+      <h2>Economics</h2>
+      <table>
+        <tr><th>Item</th><th>Value / note</th></tr>
+        <tr><td>Block reward</td><td>~2,900 CTSI per block</td></tr>
+        <tr><td>Reward source</td><td>Cartesi Mine Reserve — see <a href="https://cartesi.io/blog/transparency_report_2025/">2025 Transparency Report</a> (59.83% of foundation CTSI deployed for staking rewards as of year-end)</td></tr>
+        <tr><td>Staking maturation</td><td>~6 hours before stake counts toward selection</td></tr>
+        <tr><td>Unstaking maturation</td><td>~48 hours before withdraw</td></tr>
+        <tr><td>Slashing</td><td>None — principal safe if node fails</td></tr>
+        <tr><td>Hardware</td><td>Minimal — probability depends on stake, not compute</td></tr>
+      </table>
+      <p class="small">Networks: Ethereum mainnet (prod), Sepolia, local Hardhat (31337).</p>
+    </section>
+
+    <!-- 7 Staker vs worker -->
+    <section class="slide">
+      <h2>Staker vs worker</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Staker (owner)</h3>
+          <p>Holds staked CTSI. Receives CTSI rewards.</p>
+          <p class="small">Example: your MetaMask wallet, or the pool contract</p>
+        </div>
+        <div class="card">
+          <h3>Worker (node)</h3>
+          <p>Authorized agent that submits <code>produceBlock()</code>. Spends ETH gas.</p>
+          <p class="small">Example: Noether node's wallet (auto-created on first run)</p>
+        </div>
+      </div>
+      <h3>Hiring</h3>
+      <p>Register node address + send ETH on-chain → funds gas, authorizes worker, wakes up the node.</p>
+      <p><strong>Retire</strong> old node → hire new address. Stake stays on <code>StakingImpl</code>.</p>
+    </section>
+
+    <!-- 8 Testing -->
+    <section class="slide">
+      <h2>How can I test the staking system?</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Sepolia testnet</h3>
+          <ol>
+            <li>Get Sepolia ETH + test CTSI (ask Cartesi on <a href="https://discord.gg/n85Msyp">Discord</a>)</li>
+            <li>Run Noether against Sepolia RPC (Infura / Alchemy URL in Docker <code>--url</code>)</li>
+            <li>Open <a href="https://explorer.cartesi.io">explorer.cartesi.io</a> — switch MetaMask to Sepolia</li>
+            <li>Stake, hire your node (copy address from <code>starting worker 0x…</code> log), produce blocks</li>
+          </ol>
+          <p class="small">Same flows as mainnet; no real money.</p>
+        </div>
+        <div class="card">
+          <h3>Local Hardhat (chain 31337)</h3>
+          <ol>
+            <li><code>staking-pool</code> or <code>pos-dlib</code> → <code>yarn start</code> (Hardhat on :8545, deploys contracts)</li>
+            <li><code>noether</code> → <code>yarn start --account-index 1</code> (worker on account 1)</li>
+            <li><code>pos-dlib</code> → <code>worker:hire</code>, <code>pos:create</code>, fund RewardManager, <code>pos:stake</code></li>
+            <li>Optional full stack: Graph node + subgraph + explorer <code>yarn dev</code> (MetaMask → localhost:8545, chain 31337)</li>
+          </ol>
+          <p class="small">Fast iteration; reset Hardhat wipes chain state.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 Key concepts -->
+    <section class="slide">
+      <h2>Key concepts — maturation</h2>
+      <table>
+        <tr><th>Action</th><th>Delay</th><th>Effect</th><th>Why</th></tr>
+        <tr><td>Stake</td><td>~6h</td><td>New CTSI not counted until matured</td><td>Prevents last-minute stake dumps right before block selection</td></tr>
+        <tr><td>Unstake</td><td>Immediate</td><td>Removed from selection; enters release queue</td><td>Weight drops instantly so unstaked CTSI cannot win blocks</td></tr>
+        <tr><td>Withdraw</td><td>~48h after unstake</td><td>CTSI returns to wallet</td><td>Security delay so tokens cannot be unstaked and withdrawn in one maneuver around selection</td></tr>
+      </table>
+      <p class="small">Adding stake while maturing or unstaking while releasing resets the respective clock.</p>
+    </section>
+
+    <!-- 10 Security -->
+    <section class="slide">
+      <h2>Audits & security</h2>
+      <ul>
+        <li><strong>CertiK</strong> (Sep 2021) — staking-pool contracts; 14 findings, 0 critical</li>
+        <li><strong>Internal / advisor</strong> review before mainnet beta</li>
+        <li><strong>Immunefi</strong> bounty (up to $500k) — program URL may be stale</li>
+        <li><strong>PoS v2 (Nov 2022)</strong> — no separate public audit found</li>
+      </ul>
+      <div class="card" style="margin-top: 1rem;">
+        <p>Node compromise: attacker can only steal <strong>node wallet ETH</strong>, not staked CTSI. CTSI controlled by staker wallet only.</p>
+      </div>
+    </section>
+
+    <!-- 11 Resources -->
+    <section class="slide">
+      <h2>Resources</h2>
+      <ul>
+        <li><a href="https://explorer.cartesi.io">explorer.cartesi.io</a> — staking portal</li>
+        <li><a href="https://docs.cartesi.io/earn-ctsi/staking">docs.cartesi.io — Earn CTSI</a></li>
+        <li><a href="https://docs.cartesi.io/earn-ctsi/staking-faq">Staking FAQ</a> — costs, security, retiring nodes</li>
+        <li><a href="https://medium.com/cartesi/running-a-node-and-staking-42523863970e">Running a Node and Staking</a></li>
+        <li><a href="https://cartesi.io/blog/transparency_report_2025/">2025 Cartesi Foundation Transparency Report</a> — Mine Reserve & treasury</li>
+        <li>Repos: cartesi/pos-dlib, staking-pool, noether, explorer, subgraph</li>
+      </ul>
+      <h3>Planned deep dives (noether-docs)</h3>
+      <p class="small">Node deployment, selection math, share edge cases, explorer dev, subgraph schema</p>
+    </section>
+
+    <!-- 12 End -->
+    <section class="slide title-slide">
+      <h1>Questions?</h1>
+      <p class="subtitle">noether-docs — ecosystem knowledge base</p>
+      <p class="small">← → or Space to navigate</p>
+    </section>
+
+  </div>
+
+  <div class="progress" id="progress"></div>
+  <div class="counter" id="counter"></div>
+  <div class="nav">
+    <button type="button" id="prev" aria-label="Previous">← Prev</button>
+    <button type="button" id="next" aria-label="Next">Next →</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const total = slides.length;
+    let current = 0;
+
+    function go(n) {
+      slides[current].classList.remove('active');
+      current = Math.max(0, Math.min(n, total - 1));
+      slides[current].classList.add('active');
+      document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+      document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+    }
+
+    document.getElementById('next').addEventListener('click', () => go(current + 1));
+    document.getElementById('prev').addEventListener('click', () => go(current - 1));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        go(current + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        go(current - 1);
+      } else if (e.key === 'Home') go(0);
+      else if (e.key === 'End') go(total - 1);
+    });
+
+    go(0);
+  </script>
+</body>
+</html>
