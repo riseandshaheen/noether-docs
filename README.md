@@ -22,18 +22,6 @@ Cartesi's PoS stack is separate from the Rollups application stack. It governs *
 | [pos-dlib (core contracts)](./pos-dlib.md) | High-level map of PoS contracts, how they interact, and audits |
 | [staking-pool](./staking-pool.md) | Public pools: facets, rebalance, commissions, and audits |
 
-## Local repositories
-
-These repos are cloned alongside this folder in the parent workspace:
-
-| Repo | Path |
-| --- | --- |
-| [noether](https://github.com/cartesi/noether) | `../noether` |
-| [pos-dlib](https://github.com/cartesi/pos-dlib) | `../pos-dlib` |
-| [staking-pool](https://github.com/cartesi/staking-pool) | `../staking-pool` |
-| [explorer](https://github.com/cartesi/explorer) | `../explorer` |
-| [subgraph](https://github.com/cartesi/subgraph) | `../subgraph` |
-
 ## External resources
 
 - [Cartesi Staking Portal](https://explorer.cartesi.io) — live staking UI
