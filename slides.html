@@ -388,7 +388,15 @@
       <p><strong>Retire</strong> old node → hire new address. Stake stays on <code>StakingImpl</code>.</p>
     </section>
 
-    <!-- 8 How staking pools work -->
+    <!-- 8 How staking works (PoS core) -->
+    <section class="slide">
+      <h2>How does staking work?</h2>
+      <div class="slide-diagram">
+        <img src="diagrams/pos-dlib-overview.png" alt="PoS core: User stakes and hires via Staking and WorkerManager; Worker calls produceBlock on PoSV2; Eligibility, Difficulty, and HistoricalData modules; RewardManagerV2 pays CTSI" />
+      </div>
+    </section>
+
+    <!-- 9 How staking pools work -->
     <section class="slide">
       <h2>How do staking pools work?</h2>
       <div class="slide-diagram">
@@ -396,7 +404,7 @@
       </div>
     </section>
 
-    <!-- 9 Testing -->
+    <!-- 10 Testing -->
     <section class="slide">
       <h2>How can I test the staking system?</h2>
       <div class="grid-2">
@@ -423,7 +431,7 @@
       </div>
     </section>
 
-    <!-- 10 Key concepts -->
+    <!-- 11 Key concepts -->
     <section class="slide">
       <h2>Key concepts — maturation</h2>
       <table>
@@ -435,7 +443,7 @@
       <p class="small">Adding stake while maturing or unstaking while releasing resets the respective clock.</p>
     </section>
 
-    <!-- 11 Security -->
+    <!-- 12 Security -->
     <section class="slide">
       <h2>Audits & security</h2>
       <ul>
@@ -449,7 +457,7 @@
       </div>
     </section>
 
-    <!-- 12 Resources -->
+    <!-- 13 Resources -->
     <section class="slide">
       <h2>Resources</h2>
       <ul>
@@ -464,7 +472,7 @@
       <p class="small">Node deployment, selection math, share edge cases, explorer dev, subgraph schema</p>
     </section>
 
-    <!-- 13 End -->
+    <!-- 14 End -->
     <section class="slide title-slide">
       <h1>Questions?</h1>
       <p class="subtitle">noether-docs — ecosystem knowledge base</p>
