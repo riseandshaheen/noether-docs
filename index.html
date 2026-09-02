@@ -238,6 +238,24 @@
 
     .highlight { color: var(--warn); }
 
+    .slide-diagram {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.5rem;
+      min-height: 0;
+    }
+
+    .slide-diagram img {
+      max-width: 100%;
+      max-height: calc(100vh - 10rem);
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
     @media (max-width: 900px) {
       .slide { padding: 2rem 1.5rem 3rem; }
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
@@ -370,7 +388,15 @@
       <p><strong>Retire</strong> old node → hire new address. Stake stays on <code>StakingImpl</code>.</p>
     </section>
 
-    <!-- 8 Testing -->
+    <!-- 8 How staking pools work -->
+    <section class="slide">
+      <h2>How do staking pools work?</h2>
+      <div class="slide-diagram">
+        <img src="diagrams/staking-pool.png" alt="Staking pool architecture: Owner, User, and Node interact with StakingPool facets (User, Staking, Worker, Management, Producer) and external ENS, WorkerManager, Staking, and PoS contracts" />
+      </div>
+    </section>
+
+    <!-- 9 Testing -->
     <section class="slide">
       <h2>How can I test the staking system?</h2>
       <div class="grid-2">
@@ -397,7 +423,7 @@
       </div>
     </section>
 
-    <!-- 9 Key concepts -->
+    <!-- 10 Key concepts -->
     <section class="slide">
       <h2>Key concepts — maturation</h2>
       <table>
@@ -409,7 +435,7 @@
       <p class="small">Adding stake while maturing or unstaking while releasing resets the respective clock.</p>
     </section>
 
-    <!-- 10 Security -->
+    <!-- 11 Security -->
     <section class="slide">
       <h2>Audits & security</h2>
       <ul>
@@ -423,7 +449,7 @@
       </div>
     </section>
 
-    <!-- 11 Resources -->
+    <!-- 12 Resources -->
     <section class="slide">
       <h2>Resources</h2>
       <ul>
@@ -438,7 +464,7 @@
       <p class="small">Node deployment, selection math, share edge cases, explorer dev, subgraph schema</p>
     </section>
 
-    <!-- 12 End -->
+    <!-- 13 End -->
     <section class="slide title-slide">
       <h1>Questions?</h1>
       <p class="subtitle">noether-docs — ecosystem knowledge base</p>
